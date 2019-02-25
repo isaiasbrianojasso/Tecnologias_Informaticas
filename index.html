@@ -23,22 +23,29 @@
             </button>
             <div id="menu" class="collapse navbar-collapse">
                 <ul class="navbar-nav ml-auto">
-                    <li class="navbar-item"><a class="nav-link" href="">Home</a></li>
-                    <li class="navbar-item"><a class="nav-link" href="">Agregar</a></li>
-                    <li class="navbar-item"><a class="nav-link" href="">Editar</a></li>
-                    <li class="navbar-item"><a class="nav-link" href="">Borrar</a></li>
+                    <li class="navbar-item"><a class="nav-link  text-white" href="">Home</a></li>
+                    <li class="navbar-item"><a class="nav-link  text-white" href="">Agregar</a></li>
+                    <li class="navbar-item"><a class="nav-link  text-white" href="">Editar</a></li>
+                    <li class="navbar-item"><a class="nav-link  text-white" href="">Borrar</a></li>
+                    <li class="navbar-item"><a class="nav-link  text-white" href="">Buscar</a></li>
+                    <div class="d-flex justify-content-center h-100">
+                        <div class="searchbar">
+                            <input class="search_input" type="text" name="busqueda" placeholder="Busqueda...">
+                            <a href="#" class="search_icon"><i class="fas fa-search"></i></a>
+                        </div>
+                    </div>
                 </ul>
             </div>
         </nav>
     </header>
     <!----------------------------------------------MAIN------------------------------------------------>
     <main>
-        <div class="container-fluid">
+        <div class="container-fluid pt-3 pb-5">
             <div class="row">
-                <div class="card-group border border-outline-dark py-5">
+                <div class="card-group border border-outline-dark ml-4">
                     <div class="card-body">
-                        <h2 class="card-title">Ejercicio Node, Express, Jquery</h2>
                         <div class="col-4-md">
+
                             <form action="" class="row-form-group">
                                 <label for="nombre" class="col-sm-3 col-form-label">Nombre</label>
                                 <input type="text" class="form-control col-sm-9 " placeholder="Nombre" name="nombre"
@@ -60,7 +67,7 @@
                     </div>
                 </div>
                 <!----------------------------------------------LISTA DE ALUMNOS LIST------------------------------------------------>
-                <div class="col-8-md py-5 ml-auto">
+                <div class="col-8-md py-2 ml-auto mr-4">
                     <div class="clear"></div>
                     <div>
                         <h4> Lista de Alumnos </h4>
@@ -70,8 +77,8 @@
                 </div>
             </div>
             <!---------------------git add README.md-------------------------MODAL EDITAR ALUMNO--------------------------------------------------------->
-            <div class="modal fade" name="modaleditar" id="modaleditar">
-                <div class="modal-dialog modal-dialog-centered">
+            <div class="modal fade" tabindex="-1" role="dialog" id="editModal">
+                <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5>Editar Usuario</h5>
@@ -81,15 +88,17 @@
                             <div class="form-group">
                                 <form>
                                     <label for="nombre">Nombre</label>
-                                    <input type="text" id="muestranombre" name="muestranombre" class="muestranombre form-control">
+                                    <input type="text" id="nombreEdit" name="nombreEdit"
+                                        class="muestranombre form-control">
                                     <label for="clave">Clave</label>
-                                    <input type="text" id="muestraclave" name="muestraclave" class="muestraclave form-control">
+                                    <input type="text" id="claveEdit" name="claveEdit"
+                                        class="muestraclave form-control">
                                 </form>
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button class=" editar btn btn-danger" data-dismiss="modal">Cancelar</button>
-                            <button type="button" id="btnmodal" class='editar btn btn-success'>Aceptar</button>
+                            <button type="button" id="SaveEdit" class='editar btn btn-success'>Aceptar</button>
                         </div>
                     </div>
                 </div>
@@ -117,17 +126,38 @@
         //Una vez que este listo el documento obtendremos la lista de alumnos y la mostraremos.
         getAlumnos();
 
+        /*
+                //Programacion del boton editar para obtener datos del input del modal.
+                $("#btnmodal").on("click", function (event) {
+                    console.log(event);
+                    var alumno = {}; //Creacion de objeto con la info necesaria.
+                    alumno.nombre = $("#muestranombre").val();
+                    alumno.clave = $("#muestraclave").val();
+                    //Invocamos a la funcion para llamadas post y mandamos el obeto.
+                    sendEDITRequest(alumno);
+                })
+        */
 
-        //Programacion del boton editar para obtener datos del input del modal.
-        $("#btnmodal").on("click", function (event) {
-            console.log(event);
-            var alumno = {}; //Creacion de objeto con la info necesaria.
-            alumno.nombre = $("#muestranombre").val();
-            alumno.clave = $("#muestraclave").val();
-            //Invocamos a la funcion para llamadas post y mandamos el obeto.
-            sendEDITRequest(alumno);
-        })
+        $('#editModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // el botton que invoca al modal
+            var clave = button.data('clave'); //  data-* attributes
+            var nombre = button.data('nombre');
+            // se puede realizar una busqueda del objeto usando la misma API si tuviera mas propiedades.
+            var modal = $(this);
+            modal.find('.modal-title').text('Edicion del Alumno: ' + clave);
+            modal.find('.modal-body input#claveEdit').val(clave);
+            modal.find('.modal-body input#nombreEdit').val(nombre);
+            modal.find('.modal-footer button#SaveEdit').unbind().on('click', (event) => {
+                console.log("Guardando Alumno: " + clave);
+                var nombreNew = modal.find('.modal-body input#nombreEdit').val();
+                var claveNew = modal.find('.modal-body input#claveEdit').val();
+                var alumno = { 'claveOld': clave, 'claveNew': claveNew, 'nombreNew': nombreNew };
+                console.log(alumno);
+                sendPUTRequest(alumno);
+                modal.modal('hide');
+            });
 
+        });
 
 
         //Programacion del boton act para obtener datos del input.
@@ -152,7 +182,7 @@
             console.log(data);
             data.forEach(alumno => {
                 listHTML += "<li class='list-group-item'>" +
-                    " <button type='button' class='editar btn btn-primary btn-sm' data-toggle='modal' data-target='#modaleditar' data-clave='" + alumno.clave + "'> <i class='fas fa-edit'>Editar</i> </button> " +
+                    " <button type='button' class='editar btn btn-primary btn-sm' data-toggle='modal' data-target='#editModal' data-clave='" + alumno.clave + "'> <i class='fas fa-edit'>Editar</i> </button> " +
                     " <button type='button' class='delete btn btn-danger btn-sm' data-clave='" + alumno.clave + "'> <i class='fas fa-trash-alt'>Borrar</i> </button> " +
                     " | Clave : " + alumno.clave + " | Nombre: " + alumno.nombre + " </li>";
 
@@ -170,16 +200,6 @@
             });
             //------------------------------------EDITAR ALUMNO
             //Editar Alumno
-            $(".editar").on("click", (event) => {
-                console.log("Boton Editar");
-                console.log(event.target);
-                var alumno = {}; //Creacion de objeto con la info necesaria.
-                alumno.nombre = $("#muestranombre").val();
-                alumno.clave = $("#muestraclave").val();
-                sendPUTRequest({ "nombre": event.target.dataset["nombre"],"clave": event.target.dataset["clave"] });
-            });
-
-
         });
     }
     //------------------------------------ENVIO POST
@@ -205,26 +225,36 @@
 
 
     function sendEDITRequest(body_object) {
-        //Llamada delete al backend por medio de jquery
         $.ajax({
             method: "PUT",
             url: "http://localhost:3000/alumnos",
-            data: body_object,
-            success: function (data) {
-
-            }
+            data: body_object
         })
             .done(function (msg) {
-
+                alert("Alumno Editado: " + body_object.claveOld);
             })
             .fail(function (msg) {
-                alert("Error al EDITAR alumno: " + body_object.clave)
+                alert("Error al editar alumno: " + body_object.claveOld)
             });
         getAlumnos();
     }
 
 
 
+    function sendPUTRequest(body_object) {
+        $.ajax({
+            method: "PUT",
+            url: "http://localhost:3000/alumnos",
+            data: body_object
+        })
+            .done(function (msg) {
+                alert("Alumno Editado: " + body_object.claveOld);
+            })
+            .fail(function (msg) {
+                alert("Error al editar alumno: " + body_object.claveOld)
+            });
+        getAlumnos();
+    }
 
 
 

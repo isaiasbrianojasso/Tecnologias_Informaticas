@@ -43,20 +43,32 @@ var db = {
     }
   },
   ///////////////////////////////////////EDITAR ALUMNOS//////////////////////////////////////
-  editAlumnoByClave: function (clave,nombre) { //*agrege nombre
-    var index;
+  editAlumnoByClave: function (alumno) {
     //Buscamos el indice del alumno
-    for(index = 0; index < this.alumnos.length; index++) {
-      if (this.alumnos[index].clave ==   db.alumnos[index].clave) //si clave y nombre estan en el mismo indce hace la funcion de abajo 
-    
-      break;
+    for (var index = 0; index < this.alumnos.length; index++) {
+      if (this.alumnos[index].clave == alumno.claveOld) {
+        console.log("alumno encontrado.");
+        this.alumnos[index].clave = alumno.claveNew;
+        this.alumnos[index].nombre = alumno.nombreNew;
+        break;
+      }
     }
-    //Si se encontro el indice se edita ya lo tengo selecionado 
-    if (index < db.alumnos.length) {
-     db.alumnos[index].nombre = nombre; //unciona no modifica el nombre
-      db.alumnos[index].clave = clave; //funciona modifica la clave
-      db.saveAlumnos();
+    console.log(this.alumnos)
+    db.saveAlumnos();
+  },
+
+  editAlumno: function (alumno) {
+    //Buscamos el indice del alumno
+    for (var index = 0; index < this.alumnos.length; index++) {
+      if (this.alumnos[index].clave == alumno.claveOld) {
+        console.log("alumno encontrado.");
+        this.alumnos[index].clave = alumno.claveNew;
+        this.alumnos[index].nombre = alumno.nombreNew;
+        break;
+      }
     }
+    console.log(this.alumnos)
+    db.saveAlumnos();
   },
   ///////////////////////////////////////GUARDAR ALUMNOS//////////////////////////////////////
 
@@ -99,14 +111,12 @@ app.route("/alumnos")
   })
 
   .put((req, res) => {
-    //envio los datos por el metodo put.... indentificando la clave como base
     db.initDB();
     var alumno = req.body;
     console.log("Objeto put recibido");
     console.log(alumno);
-    db.editAlumnoByClave(alumno.clave,alumno.nombre); //*agrege nombre para
-    console.log(db.alumnos);
-    res.json({ 'status': 'OK' });
+    db.editAlumno(alumno);
+    res.json({ 'status': 'OK' })
   })
 
   .delete((req, res) => {
