@@ -262,7 +262,15 @@
         })
         getAlumnos();
     }
-
+    function sendBusquedaRequest(body_object) {
+        //Llamada delete al backend por medio de jquery
+        $.ajax({
+            method: "DELETE",
+            url: "http://localhost:3000/alumnos",
+            data: body_object
+        })
+        getAlumnos();
+    }
 
     function sendEDITRequest(body_object) {
         $.ajax({
