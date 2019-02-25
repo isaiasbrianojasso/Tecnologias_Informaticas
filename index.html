@@ -30,7 +30,7 @@
                     <div class="d-flex justify-content-center h-100">
                         <div class="searchbar">
                             <input class="search_input" type="text" name="busqueda" placeholder="Busqueda...">
-                            <a href="#" class="search_icon"><i class="fas fa-search"></i></a>
+                            <a data-target="#buscarModal"  data-toggle="modal" href="#" class="search_icon"><i class="fas fa-search"></i></a>
                         </div>
                     </div>
                 </ul>
@@ -41,17 +41,16 @@
     <main>
         <div class="container-fluid pt-3 pb-5">
             <div class="row">
-                <div class="card-group border border-outline-dark ml-4">
-                    <div class="card-body">
+                <div class="card-group ml-4">
+                    <div class="card-body border border-primary rounded">
                         <div class="col-4-md">
-
                             <form action="" class="row-form-group">
                                 <label for="nombre" class="col-sm-3 col-form-label">Nombre</label>
                                 <input type="text" class="form-control col-sm-9 " placeholder="Nombre" name="nombre"
-                                    id="nombre">
+                                    id="nombre" required>
                                 <label for="clave" class="col-sm-3 col-form-label">Clave</label>
                                 <input type="text" class="form-control col-sm-9 " placeholder="Clave" name="clave"
-                                    id="clave">
+                                    id="clave" required>
                                 <div class="row">
                                     <div class="offset-sm-3 pt-2">
                                         <button class="btn btn-info fas fa-save" id="act" class="form-control"
@@ -66,10 +65,10 @@
                     </div>
                 </div>
                 <!----------------------------------------------LISTA DE ALUMNOS LIST------------------------------------------------>
-                <div class="col-8-md py-2 ml-auto mr-4">
+                <div class="col-8-md py-2 ml-auto mr-4 border border-primary rounded">
                     <div class="clear"></div>
                     <div>
-                        <h4> Lista de Alumnos </h4>
+                        <h4 class="text-center"> Lista de Alumnos </h4>
                         <ul id="lista-alumnos" class="list-group">
                         </ul>
                     </div>
@@ -103,13 +102,44 @@
                 </div>
             </div>
             <!--------------------------------------------AQUI TERMINA EL MODAL EDITAR ALUMNO------------------------------------------------>
+            
+              <!---------------------git add README.md-------------------------MODAL Buscar ALUMNO--------------------------------------------------------->
+              <div class="modal fade" tabindex="-1" role="dialog" id="buscarModal">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5>Buscar Usuario</h5>
+                                <button class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <form>
+                                        <label for="nombre">Nombre</label>
+                                        <input type="text" id="nombre" name="nombre"
+                                            class="muestranombre form-control">
+                                        <label for="clave">Clave</label>
+                                        <input type="text" id="clave" name="clave"
+                                            class="muestraclave form-control">
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class=" editar btn btn-danger" data-dismiss="modal">Cancelar</button>
+                                <button type="button" id="SaveEdit" class='editar btn btn-success'>Aceptar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--------------------------------------------AQUI TERMINA EL MODAL Busca ALUMNO------------------------------------------------>
+            
+            
             <!----------------------------------------------AQUI TERMINA EL CONTAINER------------------------------------------------>
         </div>
         <!---------------------------------------------- TERMINA MAIN------------------------------------------------>
     </main>
     <!----------------------------------------------FOOTER NO MAS POR PALETOSO------------------------------------------------>
     <footer class="card-footer">
-        Isaias Briano Jasso TAREA EDITAR
+        Isaias Briano Jasso
     </footer>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
         integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
@@ -168,6 +198,17 @@
             //Invocamos a la funcion para llamadas post y mandamos el obeto.
             sendPOSTRequest(alumno);
         });
+/////////////////////////////////////////////////////BUSQUEDA////////////////////////
+      //Programacion del boton busqueda para obtener datos del input.
+      $("#busqueda").on("click", function (event) {
+            console.log(event);
+            var alumno = {}; //Creacion de objeto con la info necesaria.
+            alumno.nombre = $("#nombre").val();
+            alumno.clave = $("#clave").val();
+            //Invocamos a la funcion para llamadas post y mandamos el obeto.
+            sendBusquedaRequest(alumno);
+        });
+/////////////////////////////////////////////////////BUSQUEDA////////////////////////
 
     });
     //------------------------------------IMPRIME EN PANTALLA ALUMNO
